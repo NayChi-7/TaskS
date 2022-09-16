@@ -5,6 +5,8 @@ import se.edu.inclass.task.Deadline;
 import se.edu.inclass.task.Task;
 import se.edu.inclass.task.TaskNameComparator;
 
+import java.lang.reflect.Array;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 public class Main {
@@ -15,10 +17,17 @@ public class Main {
         DataManager dm = new DataManager("./data/data.txt");
         ArrayList<Task> tasksData = dm.loadData();
 
-        System.out.println("Printing deadlines");
+//        System.out.println("All data: ");
+//        printData(tasksData);
+//
+//        System.out.println("Printing deadlines");
         printDeadlines(tasksData);
+        printDataUsingStreams(tasksData);
+        printDeadlinesUsingStreams(tasksData);
 
         System.out.println("Total number of deadlines: " + countDeadlines(tasksData));
+        System.out.println("Total number of deadlines using streams : " + countDeadlinesUsingStreams(tasksData));
+
 
     }
 
@@ -32,10 +41,23 @@ public class Main {
         return count;
     }
 
+    private static int countDeadlinesUsingStreams (ArrayList <Task> tasks){
+        int count = (int) tasks.stream().filter(t -> t instanceof Deadline).count();
+        return count;
+    }
+
+
+
     public static void printData(ArrayList<Task> tasksData) {
+        System.out.println("Printing data using loops");
         for (Task t : tasksData) {
             System.out.println(t);
         }
+    }
+
+    public static void printDataUsingStreams (ArrayList<Task> tasks){
+        System.out.println("Printing data using streams");
+        tasks.stream().forEach(System.out::println);
     }
 
     public static void printDeadlines(ArrayList<Task> tasksData) {
@@ -45,4 +67,10 @@ public class Main {
             }
         }
     }
+
+    public static void printDeadlinesUsingStreams (ArrayList<Task> tasks){
+        System.out.println("Printing deadlines using streams: ");
+        tasks.parallelStream().filter(t -> t instanceof Deadline).forEach(System.out::println);
+    }
+
 }
